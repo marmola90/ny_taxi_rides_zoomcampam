@@ -5,7 +5,7 @@ with tripdata as
   select *,
     row_number() over(partition by vendorid, lpep_pickup_datetime) as rn
   from {{ source('staging','green_tripdata') }}
-  where vendorid is not null 
+  where vendorid !=0
 )
 
 select
@@ -41,8 +41,8 @@ select
 from tripdata
 where rn=1
 
-{% if var('is_test_run',default=true )%}
+{% if var('is_test_run',default=false )%}
 
-    --limit 100
+    limit 100
 
 {% endif %}
